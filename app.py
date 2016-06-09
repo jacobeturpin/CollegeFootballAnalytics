@@ -2,20 +2,12 @@
     for analysis
 """
 
-from flask import Flask
-
-app = Flask(__name__)
-
-
-@app.route('/')
-def index():
-    return "Hello World!"
-
+from server import app
 
 def main():
     """ Test """
     
-    app.run('0.0.0.0')
+    app.run('0.0.0.0', debug = True)
     return None
 
 

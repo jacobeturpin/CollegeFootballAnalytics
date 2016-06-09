@@ -64,3 +64,4 @@ target/
 # Project Files
 *.sublime*
 *.pyproj
+*.sln
