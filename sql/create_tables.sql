@@ -47,7 +47,11 @@ CREATE TABLE RushReceiveBoxScore (
 	RushAttempts				INTEGER			NULL,
 	RushYards					INTEGER			NULL,
 	RushYardsPerAttempt			DECIMAL			NULL,
-	RushTouchdowns				INTEGER			NULL
+	RushTouchdowns				INTEGER			NULL,
+	Receptions					INTEGER			NULL,
+	ReceiveYards				INTEGER			NULL,
+	ReceiveYardsPerReception	DECIMAL			NULL,
+	ReceiveTouchdowns			INTEGER			NULL
 );
 
 CREATE TABLE DefenseBoxScore (
