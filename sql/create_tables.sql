@@ -43,8 +43,11 @@ CREATE TABLE PassingBoxScore (
 CREATE TABLE RushReceiveBoxScore (
 	GameId						VARCHAR(36)		NOT NULL,
 	PlayerId					VARCHAR(36)		NOT NULL,
-	TeamId						VARCHAR(36)		NOT NULL
-	-- Stats Go Here
+	TeamId						VARCHAR(36)		NOT NULL,
+	RushAttempts				INTEGER			NULL,
+	RushYards					INTEGER			NULL,
+	RushYardsPerAttempt			DECIMAL			NULL,
+	RushTouchdowns				INTEGER			NULL
 );
 
 CREATE TABLE DefenseBoxScore (
