@@ -55,10 +55,23 @@ CREATE TABLE RushReceiveBoxScore (
 );
 
 CREATE TABLE DefenseBoxScore (
-	GameId						VARCHAR(36)		NOT NULL,
-	PlayerId					VARCHAR(36)		NOT NULL,
-	TeamId						VARCHAR(36)		NOT NULL
-	-- Stats Go Here
+	GameId									VARCHAR(36)		NOT NULL,
+	PlayerId								VARCHAR(36)		NOT NULL,
+	TeamId									VARCHAR(36)		NOT NULL,
+	SoloTackles								INTEGER			NOT NULL,
+	AssistedTackles							INTEGER			NOT NULL,
+	TotalTackles							INTEGER			NOT NULL,
+	TacklesForLoss							DECIMAL			NOT NULL,
+	Sacks									DECIMAL			NOT NULL,
+	Interceptions							INTEGER			NULL,
+	InterceptionReturnYards					INTEGER			NULL,
+	InterceptionReturnYardsPerInterception	DECIMAL			NULL,
+	InterceptionReturnTouchdowns			INTEGER			NULL,
+	PassesDefended							INTEGER			NULL,
+	FumblesRecovered						INTEGER			NULL,
+	FumbleRecoveryYards						INTEGER			NULL,
+	FumbleRecoveryTouchdowns				INTEGER			NULL,
+	FumblesForced							INTEGER			NULL
 );
 
 CREATE TABLE KickPuntReturnBoxScore (
