@@ -91,6 +91,15 @@ CREATE TABLE KickPuntReturnBoxScore (
 CREATE TABLE KickPuntBoxScore (
 	GameId						VARCHAR(36)		NOT NULL,
 	PlayerId					VARCHAR(36)		NOT NULL,
-	TeamId						VARCHAR(36)		NOT NULL
-	-- Stats Go Here
+	TeamId						VARCHAR(36)		NOT NULL,
+	ExtraPointsMade				INTEGER			NULL,
+	ExtraPointsAttempted		INTEGER			NULL,
+	ExtraPointPercentage		DECIMAL			NULL,
+	FieldGoalsMade				INTEGER			NULL,
+	FieldGoalsAttempted			INTEGER			NULL,
+	FieldGoalPercentage			DECIMAL			NULL,
+	KickingPoints				INTEGER			NULL,
+	Punts						INTEGER			NULL,
+	PuntYards					INTEGER			NULL,
+	PuntYardsPerAttempt			DECIMAL			NULL
 );
