@@ -75,10 +75,17 @@ CREATE TABLE DefenseBoxScore (
 );
 
 CREATE TABLE KickPuntReturnBoxScore (
-	GameId						VARCHAR(36)		NOT NULL,
-	PlayerId					VARCHAR(36)		NOT NULL,
-	TeamId						VARCHAR(36)		NOT NULL
-	-- Stats Go Here
+	GameId							VARCHAR(36)		NOT NULL,
+	PlayerId						VARCHAR(36)		NOT NULL,
+	TeamId							VARCHAR(36)		NOT NULL,
+	KickoffReturns					INTEGER			NULL,
+	KickoffReturnYards				INTEGER			NULL,
+	KickoffReturnYardsPerReturn		DECIMAL			NULL,
+	KickoffReturnTouchdowns			INTEGER			NULL,
+	PuntReturns						INTEGER			NULL,
+	PuntReturnYards					INTEGER			NULL,
+	PuntReturnYardsPerReturn		DECIMAL			NULL,
+	PuntReturnTouchdowns			INTEGER			NULL
 );
 
 CREATE TABLE KickPuntBoxScore (
