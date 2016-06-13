@@ -25,6 +25,20 @@ CREATE TABLE Game (
 	AwayTeamScore	INTEGER			NOT NULL
 );
 
+CREATE TABLE TeamBoxScore (
+	GameId				VARCHAR(36)		NOT NULL,
+	TeamId				VARCHAR(36)		NOT NULL,
+	TotalYards			INTEGER			NOT NULL,
+	TotalPlays			INTEGER			NOT NULL,
+	YardsPerPlay		DECIMAL			NOT NULL,
+	FirstDowns			INTEGER			NOT NULL,
+	FirstDownsPass		INTEGER			NOT NULL,
+	FirstDownsRush		INTEGER			NOT NULL,
+	FirstDownsPenalty	INTEGER			NOT NULL,
+	Penalties			INTEGER			NOT NULL,
+	PenaltyYards		INTEGER			NOT NULL
+);
+
 CREATE TABLE PassingBoxScore (
 	GameId						VARCHAR(36)		NOT NULL,
 	PlayerId					VARCHAR(36)		NOT NULL,
