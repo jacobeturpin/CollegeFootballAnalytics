@@ -1,6 +1,8 @@
 """ Functional script to scrape web data """
 
-import bs4
+from bs4 import BeautifulSoup
+from datetime import date
+
 import requests
 
 
@@ -9,6 +11,18 @@ __url_root = 'http://sports-reference.com/cfb/'
 
 def get_all_games_for_date(year, month, day):
     """ Retrieves links for all games ocurring on a specified date """
+
+    if date.today() < date(month=month, day=day, year=year):
+        raise ValueError("Must use past date")
+
+    url = str.format('{0}boxscores/index.cgi?month={1}&day={2}&year={3}',
+                     __url_root, month, day, year)
+    with requests.get(url).content as page_content:
+        soup = BeautifulSoup(page_content, "html.parser")
+        # TODO: update to only include current date's games
+        games = [link.get('href') for link in soup.find_all('a', text='Final')]
+        return games
+
     pass
 
 def get_game_summary_info(content):
