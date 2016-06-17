@@ -4,10 +4,14 @@ from bs4 import BeautifulSoup
 from datetime import date
 
 import requests
-
+import re
 
 __url_root = 'http://sports-reference.com/cfb/'
 
+
+def clean_html(item):
+   """ Takes html from scraping and removes unecessary elements """
+   return list(filter(lambda x: x != '\n', item))
 
 def get_all_games_for_date(year, month, day):
     """ Retrieves links for all games ocurring on a specified date """
@@ -37,9 +41,9 @@ def get_passing_stats(content):
     """ Retrieves player-level passing data for specified game """
 
     html = content.find('h2', text='Passing').parent.findNextSibling()
-    [x.parent.parent.contents for x in html.find_all('a', href=re.compile('.*player.*')]
-    # TODO: Need to convert contents into tuples for passing records
-    return None
+    test = [x.parent.parent.contents for x in html.find_all('a', href=re.compile('.*player.*'))]
+    test = list(map(clean_html, test))
+    return test
 
 def get_rush_receive_stats(content):
     """ Retrieves player-level rush and receiving data for specified game """
@@ -59,12 +63,12 @@ def get_kick_punt_stats(content):
 
 def execute_game_data_collection(link):
     """ Function used to collect game data for specified link """
-    with BeautifulSoup(requests.get(link).content, 'html.parser') as page_content:
-        gsi = get_game_summary_info(page_content)
-        gts = get_game_team_stats(page_content)
-        ps = get_passing_stats(page_content)
-        rrs = get_rush_receive_stats(page_content)
-        ds = get_defense_stats(page_content)
-        rs = get_return_stats(page_content)
-        kps = get_kick_punt_stats(page_content)
+    page_content = BeautifulSoup(requests.get(link).content, 'html.parser')
+    gsi = get_game_summary_info(page_content)
+    gts = get_game_team_stats(page_content)
+    ps = get_passing_stats(page_content)
+    rrs = get_rush_receive_stats(page_content)
+    ds = get_defense_stats(page_content)
+    rs = get_return_stats(page_content)
+    kps = get_kick_punt_stats(page_content)
     return gsi, gts, ps, rrs, ds, rs, kps
