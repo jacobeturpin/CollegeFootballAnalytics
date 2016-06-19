@@ -29,12 +29,11 @@ def get_all_games_for_date(year, month, day):
 
     url = str.format('{0}boxscores/index.cgi?month={1}&day={2}&year={3}',
                      __url_root, month, day, year)
-    with requests.get(url).content as page_content:
-        soup = BeautifulSoup(page_content, "html.parser")
-        # TODO: update to only include current date's games
-        return [link.get('href') for link in soup.find_all('a', text='Final')]
 
-    return None
+    page_content =  requests.get(url).content
+    soup = BeautifulSoup(page_content, "html.parser")
+    table = get_table_container(soup, text=re.compile('[0-9]+ Game.*'))
+    return [link.get('href') for link in table.find_all('a', text='Final')]
 
 def get_game_summary_info(content):
     """ Retrieves game score and summary info for specified link """
