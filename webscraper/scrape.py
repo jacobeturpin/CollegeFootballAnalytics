@@ -1,10 +1,11 @@
 """ Functional script to scrape web data """
 
-from bs4 import BeautifulSoup
 from datetime import date
 
+from bs4 import BeautifulSoup
 import requests
 import re
+
 
 __url_root = 'http://sports-reference.com/cfb/'
 
@@ -12,6 +13,13 @@ __url_root = 'http://sports-reference.com/cfb/'
 def clean_html(item):
    """ Takes html from scraping and removes unecessary elements """
    return list(filter(lambda x: x != '\n', item))
+
+def extract_components_from_html(list):
+    pass
+
+def get_table_container(content, text):
+    """ Uses heading text from DOM to retrieve tabular html content """
+    return content.find('h2', text=text).parent.findNextSibling()
 
 def get_all_games_for_date(year, month, day):
     """ Retrieves links for all games ocurring on a specified date """
@@ -24,10 +32,9 @@ def get_all_games_for_date(year, month, day):
     with requests.get(url).content as page_content:
         soup = BeautifulSoup(page_content, "html.parser")
         # TODO: update to only include current date's games
-        games = [link.get('href') for link in soup.find_all('a', text='Final')]
-        return games
+        return [link.get('href') for link in soup.find_all('a', text='Final')]
 
-    pass
+    return None
 
 def get_game_summary_info(content):
     """ Retrieves game score and summary info for specified link """
@@ -40,26 +47,37 @@ def get_game_team_stats(content):
 def get_passing_stats(content):
     """ Retrieves player-level passing data for specified game """
 
-    html = content.find('h2', text='Passing').parent.findNextSibling()
-    test = [x.parent.parent.contents for x in html.find_all('a', href=re.compile('.*player.*'))]
-    test = list(map(clean_html, test))
-    return test
+    header = get_table_container(content, 'Passing')
+    html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
+    return list(map(clean_html, html))
 
 def get_rush_receive_stats(content):
     """ Retrieves player-level rush and receiving data for specified game """
-    pass
+    
+    header = get_table_container(content, 'Rushing & Receiving')
+    html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
+    return list(map(clean_html, html))
 
 def get_defense_stats(content):
     """ Retrieves player-level defensive data for specified game """
-    pass
+    
+    header = get_table_container(content, 'Defense & Fumbles')
+    html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
+    return list(map(clean_html, html))
 
 def get_return_stats(content):
     """ Retrieves player-level punt/kick return data for specified game """
-    pass
+    
+    header = get_table_container(content, 'Kick & Punt Returns')
+    html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
+    return list(map(clean_html, html))
 
 def get_kick_punt_stats(content):
     """ Retrieve player-level kicking data for specified game """
-    pass
+    
+    header = get_table_container(content, 'Kicking & Punting')
+    html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
+    return list(map(clean_html, html))
 
 def execute_game_data_collection(link):
     """ Function used to collect game data for specified link """
