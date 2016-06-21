@@ -1,4 +1,4 @@
-""" Functional script to scrape web data """
+""" Functional module to scrape web data """
 
 from datetime import date
 
@@ -24,16 +24,18 @@ def get_table_container(content, text):
 def get_all_games_for_date(year, month, day):
     """ Retrieves links for all games ocurring on a specified date """
 
-    if date.today() < date(month=month, day=day, year=year):
-        raise ValueError("Must use past date")
+    input_date = date(month=month, day=day, year=year)
+
+    if date.today() <= input_date:
+        raise ValueError("Must provide past date")
 
     url = str.format('{0}boxscores/index.cgi?month={1}&day={2}&year={3}',
                      __url_root, month, day, year)
 
-    page_content =  requests.get(url).content
-    soup = BeautifulSoup(page_content, "html.parser")
-    table = get_table_container(soup, text=re.compile('[0-9]+ Game.*'))
-    return [link.get('href') for link in table.find_all('a', text='Final')]
+    soup = BeautifulSoup(requests.get(url).content, 'lxml')
+    regex_string = str.format('.*{}.*', input_date.strftime('%Y-%m-%d'))
+    return [link.get('href') for link 
+            in soup.find_all('a', href=re.compile(regex_string), text='Final')]
 
 def get_game_summary_info(content):
     """ Retrieves game score and summary info for specified link """
@@ -80,7 +82,7 @@ def get_kick_punt_stats(content):
 
 def execute_game_data_collection(link):
     """ Function used to collect game data for specified link """
-    page_content = BeautifulSoup(requests.get(link).content, 'html.parser')
+    page_content = BeautifulSoup(requests.get(link).content, 'lxml')
     gsi = get_game_summary_info(page_content)
     gts = get_game_team_stats(page_content)
     ps = get_passing_stats(page_content)
