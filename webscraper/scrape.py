@@ -1,6 +1,6 @@
 """ Functional module to scrape web data """
 
-from datetime import date
+from datetime import date, timedelta
 
 from bs4 import BeautifulSoup
 import requests
@@ -15,7 +15,14 @@ def clean_html(item):
    return list(filter(lambda x: x != '\n', item))
 
 def extract_components_from_html(list):
-    pass
+    """ Updates list html elements into desired statistical components """
+
+    for idx, value in enumerate(list):
+        if item.content in list:
+            list[idx] = ('name', 'link') # Placeholder for links
+        else:
+            list.idx = val # Placeholder for numerical data
+    return list
 
 def get_table_container(content, text):
     """ Uses heading text from DOM to retrieve tabular html content """
@@ -91,3 +98,12 @@ def execute_game_data_collection(link):
     rs = get_return_stats(page_content)
     kps = get_kick_punt_stats(page_content)
     return gsi, gts, ps, rrs, ds, rs, kps
+
+
+if __name__ == '__main__':
+    """ Perform data capture for the current date """
+    
+    yestr = date.today() - timedelta(days=1)
+    games = get_all_games_for_date(year=yestr.year, month=yestr.month, day=yestr.day)
+    for game in games:
+        execute_game_data_collection(game)
