@@ -18,10 +18,10 @@ def extract_components_from_html(list):
     """ Updates list html elements into desired statistical components """
 
     for idx, value in enumerate(list):
-        if item.content in list:
+        if value.contents.has_attr('a') in list:
             list[idx] = ('name', 'link') # Placeholder for links
         else:
-            list.idx = val # Placeholder for numerical data
+            list[idx] = value.contents # Placeholder for numerical data
     return list
 
 def get_table_container(content, text):
@@ -50,6 +50,20 @@ def get_game_summary_info(content):
 
 def get_game_team_stats(content):
     """ Retrieves team-level box score data for specified game """
+
+    """
+    Need to scrape the following:
+        TotalYards
+	    TotalPlays
+	    YardsPerPlay
+	    FirstDowns
+	    FirstDownsPass
+	    FirstDownsRush
+	    FirstDownsPenalty
+	    Penalties
+	    PenaltyYards
+    """
+
     pass
 
 def get_passing_stats(content):
@@ -89,6 +103,7 @@ def get_kick_punt_stats(content):
 
 def execute_game_data_collection(link):
     """ Function used to collect game data for specified link """
+
     page_content = BeautifulSoup(requests.get(link).content, 'lxml')
     gsi = get_game_summary_info(page_content)
     gts = get_game_team_stats(page_content)
