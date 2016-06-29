@@ -12,7 +12,6 @@ __url_root = 'http://sports-reference.com/cfb/'
 
 def filter_html_list(items):
    """ Takes list of html from scraping and removes unecessary elements """
-
    return list(filter(lambda x: x != '\n', items))
 
 def extract_components_from_html(list):
@@ -20,12 +19,10 @@ def extract_components_from_html(list):
 
     for idx, value in enumerate(list):
         tag = value.find('a')
-
         if tag:
             list[idx] = (tag.string, tag['href'])
         else:
            list[idx] = value.string if value.contents else 0
-
     return list
 
 def get_table_container(content, text):
@@ -75,35 +72,35 @@ def get_passing_stats(content):
 
     header = get_table_container(content, 'Passing')
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-    return list(map(filter_html_list, html))
+    return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
 
 def get_rush_receive_stats(content):
     """ Retrieves player-level rush and receiving data for specified game """
     
     header = get_table_container(content, 'Rushing & Receiving')
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-    return list(map(filter_html_list, html))
+    return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
 
 def get_defense_stats(content):
     """ Retrieves player-level defensive data for specified game """
     
     header = get_table_container(content, 'Defense & Fumbles')
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-    return list(map(filter_html_list, html))
+    return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
 
 def get_return_stats(content):
     """ Retrieves player-level punt/kick return data for specified game """
     
     header = get_table_container(content, 'Kick & Punt Returns')
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-    return list(map(filter_html_list, html))
+    return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
 
 def get_kick_punt_stats(content):
     """ Retrieve player-level kicking data for specified game """
     
     header = get_table_container(content, 'Kicking & Punting')
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-    return list(map(filter_html_list, html))
+    return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
 
 def execute_game_data_collection(link):
     """ Function used to collect game data for specified link """
