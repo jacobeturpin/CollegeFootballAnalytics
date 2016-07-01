@@ -62,6 +62,7 @@ target/
 .ipynb_checkpoints
 
 # Project Files
+.idea
 *.sublime*
 *.pyproj
 *.sln
