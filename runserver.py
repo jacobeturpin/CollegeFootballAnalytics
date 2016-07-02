@@ -4,10 +4,11 @@
 
 from server import app
 
+
 def main():
     """ Test """
     
-    app.run('0.0.0.0', debug = True)
+    app.run('0.0.0.0', debug=True)
     return None
 
 

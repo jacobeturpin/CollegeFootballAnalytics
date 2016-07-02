@@ -14,6 +14,7 @@ def filter_html_list(items):
    """ Takes list of html from scraping and removes unecessary elements """
    return list(filter(lambda x: x != '\n', items))
 
+
 def extract_components_from_html(list):
     """ Updates list of html elements with desired statistical components """
 
@@ -25,9 +26,11 @@ def extract_components_from_html(list):
            list[idx] = value.string if value.contents else 0
     return list
 
+
 def get_table_container(content, text):
     """ Uses heading text from DOM to retrieve tabular html content """
     return content.find('h2', text=text).parent.findNextSibling()
+
 
 def get_all_games_for_date(year, month, day):
     """ Retrieves links for all games ocurring on a specified date """
@@ -45,9 +48,11 @@ def get_all_games_for_date(year, month, day):
     return [link.get('href') for link 
             in soup.find_all('a', href=re.compile(regex_string), text='Final')]
 
+
 def get_game_summary_info(content):
     """ Retrieves game score and summary info for specified link """
     pass
+
 
 def get_game_team_stats(content):
     """ Retrieves team-level box score data for specified game """
@@ -55,17 +60,18 @@ def get_game_team_stats(content):
     """
     Need to scrape the following:
         TotalYards
-	    TotalPlays
-	    YardsPerPlay
-	    FirstDowns
-	    FirstDownsPass
-	    FirstDownsRush
-	    FirstDownsPenalty
-	    Penalties
-	    PenaltyYards
+        TotalPlays
+        YardsPerPlay
+        FirstDowns
+        FirstDownsPass
+        FirstDownsRush
+        FirstDownsPenalty
+        Penalties
+        PenaltyYards
     """
 
     pass
+
 
 def get_passing_stats(content):
     """ Retrieves player-level passing data for specified game """
@@ -74,12 +80,14 @@ def get_passing_stats(content):
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
     return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
 
+
 def get_rush_receive_stats(content):
     """ Retrieves player-level rush and receiving data for specified game """
     
     header = get_table_container(content, 'Rushing & Receiving')
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
     return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
+
 
 def get_defense_stats(content):
     """ Retrieves player-level defensive data for specified game """
@@ -88,6 +96,7 @@ def get_defense_stats(content):
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
     return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
 
+
 def get_return_stats(content):
     """ Retrieves player-level punt/kick return data for specified game """
     
@@ -95,12 +104,14 @@ def get_return_stats(content):
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
     return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
 
+
 def get_kick_punt_stats(content):
     """ Retrieve player-level kicking data for specified game """
     
     header = get_table_container(content, 'Kicking & Punting')
     html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
     return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
+
 
 def execute_game_data_collection(link):
     """ Function used to collect game data for specified link """

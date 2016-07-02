@@ -1,6 +1,7 @@
 import unittest
 from webscraper import *
 
+
 class WebScraperTest(unittest.TestCase):
     """ Tests for web scraping components """
 
