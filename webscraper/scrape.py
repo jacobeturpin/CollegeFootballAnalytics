@@ -57,18 +57,18 @@ def get_game_summary_info(content):
 def get_game_team_stats(content):
     """ Retrieves team-level box score data for specified game """
 
-    """
-    Need to scrape the following:
-        TotalYards
-        TotalPlays
-        YardsPerPlay
-        FirstDowns
-        FirstDownsPass
-        FirstDownsRush
-        FirstDownsPenalty
-        Penalties
-        PenaltyYards
-    """
+    # Play/Yardage Statistics
+    content.find('Total Yards')
+    content.find('Total Plays')
+    content.find('Yds/Play')
+
+    # First Down Statistics
+    content.find('First Downs')
+    # TODO: get sub-items for Pass, Rush and Penalty
+
+    # Penalty Statistics
+    content.find('Penalties')
+    # TODO: get yardage
 
     return None
 
