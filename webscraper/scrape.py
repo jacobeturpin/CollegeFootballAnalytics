@@ -11,8 +11,8 @@ __url_root = 'http://sports-reference.com/cfb/'
 
 
 def filter_html_list(items):
-   """ Takes list of html from scraping and removes unecessary elements """
-   return list(filter(lambda x: x != '\n', items))
+    """ Takes list of html from scraping and removes unecessary elements """
+    return list(filter(lambda x: x != '\n', items))
 
 
 def extract_components_from_html(list):
@@ -23,7 +23,7 @@ def extract_components_from_html(list):
         if tag:
             list[idx] = (tag.string, tag['href'])
         else:
-           list[idx] = value.string if value.contents else 0
+            list[idx] = value.string if value.contents else 0
     return list
 
 
@@ -51,7 +51,7 @@ def get_all_games_for_date(year, month, day):
 
 def get_game_summary_info(content):
     """ Retrieves game score and summary info for specified link """
-    pass
+    return None
 
 
 def get_game_team_stats(content):
@@ -70,7 +70,7 @@ def get_game_team_stats(content):
         PenaltyYards
     """
 
-    pass
+    return None
 
 
 def get_passing_stats(content):
