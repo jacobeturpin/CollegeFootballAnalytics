@@ -1,4 +1,8 @@
 import unittest
+
+from bs4 import BeautifulSoup
+import requests
+
 from webscraper import *
 
 
@@ -16,7 +20,10 @@ class WebScraperTest(unittest.TestCase):
         pass
 
     def get_passing_stats(self):
-        pass
+        link = 'http://www.sports-reference.com/cfb/boxscores/2016-01-11-clemson.html'
+        content = BeautifulSoup(requests.get(link).content, 'lxml')
+        expected_item = ''  # TODO: add item for test
+        self.assertIn(expected_item, get_passing_stats(content))
 
     def get_rush_receive_stats(self):
         pass
@@ -27,5 +34,5 @@ class WebScraperTest(unittest.TestCase):
     def get_return_stats(self):
         pass
 
-    def get_kick_punt_stats(content):
+    def get_kick_punt_stats(self):
         pass
