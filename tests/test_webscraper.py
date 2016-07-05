@@ -25,10 +25,15 @@ class WebScraperTest(unittest.TestCase):
         expected_item = (('Deshaun Watson', '/cfb/players/deshaun-watson-1.html'),
                          ('Clemson', '/cfb/schools/clemson/2015.html'),
                          '30', '47', '63.8', '405', '8.6', '9.4', '4', '1', '160.0')
-        self.assertIn(expected_item, get_passing_stats(content), msg=get_passing_stats(content))
+        self.assertIn(expected_item, get_passing_stats(content))
 
     def test_get_rush_receive_stats(self):
-        pass
+        link = 'http://www.sports-reference.com/cfb/boxscores/2012-10-11-troy.html'
+        content = BeautifulSoup(requests.get(link).content, 'lxml')
+        expected_item = (('Antonio Andrews', '/cfb/players/antonio-andrews-1.html'),
+                         ('Western Kentucky', '/cfb/schools/western-kentucky/2012.html'),
+                         '26', '113', '4.3', '0', '1', '14', '14.0', '0', '27', '127', '4.7', '0')
+        self.assertIn(expected_item, get_rush_receive_stats(content))
 
     def test_get_defense_stats(self):
         pass
