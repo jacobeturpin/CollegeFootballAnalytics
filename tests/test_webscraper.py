@@ -36,10 +36,20 @@ class WebScraperTest(unittest.TestCase):
         self.assertIn(expected_item, get_rush_receive_stats(content))
 
     def test_get_defense_stats(self):
-        pass
+        link = 'http://www.sports-reference.com/cfb/boxscores/2006-10-14-louisiana-tech.html'
+        content = BeautifulSoup(requests.get(link).content, 'lxml')
+        expected_item = (('Ben Alexander', '/cfb/players/ben-alexander-1.html'),
+                         ('Idaho', '/cfb/schools/idaho/2006.html'),
+                         '0', '4', '4', '0.0', '0.0', 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        self.assertIn(expected_item, get_defense_stats(content))
 
     def test_get_return_stats(self):
-        pass
+        link = 'http://www.sports-reference.com/cfb/boxscores/2009-11-11-central-michigan.html'
+        content = BeautifulSoup(requests.get(link).content, 'lxml')
+        expected_item = (('Antonio Brown', '/cfb/players/antonio-brown-1.html'),
+                         ('Central Michigan', '/cfb/schools/central-michigan/2009.html'),
+                         '4', '68', '17.0', '0', 0, 0, 0, 0)
+        self.assertIn(expected_item, get_return_stats(content))
 
     def test_get_kick_punt_stats(self):
         pass
