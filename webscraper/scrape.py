@@ -11,7 +11,7 @@ __url_root = 'http://sports-reference.com/cfb/'
 
 
 def filter_html_list(items):
-    """ Takes list of html from scraping and removes unecessary elements """
+    """ Takes list of html from scraping and removes unnecessary elements """
     return list(filter(lambda x: x != '\n', items))
 
 
@@ -33,7 +33,7 @@ def get_table_container(content, text):
 
 
 def get_all_games_for_date(year, month, day):
-    """ Retrieves links for all games ocurring on a specified date """
+    """ Retrieves links for all games occurring on a specified date """
 
     input_date = date(month=month, day=day, year=year)
 
@@ -57,18 +57,34 @@ def get_game_summary_info(content):
 def get_game_team_stats(content):
     """ Retrieves team-level box score data for specified game """
 
+    team_stats = list()
+
+    # Teams
+    # TODO: get team names and links
+
     # Play/Yardage Statistics
-    content.find('Total Yards')
-    content.find('Total Plays')
-    content.find('Yds/Play')
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='Total Yards').parent.next_siblings if x != '\n'])
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='Total Plays').parent.next_siblings if x != '\n'])
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='Yds/Play').parent.next_siblings if x != '\n'])
 
     # First Down Statistics
-    content.find('First Downs')
-    # TODO: get sub-items for Pass, Rush and Penalty
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='First Downs').parent.next_siblings if x != '\n'])
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='Pass').parent.next_siblings if x != '\n'])
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='Rush').parent.next_siblings if x != '\n'])
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='Penalty').parent.next_siblings if x != '\n'])
 
     # Penalty Statistics
-    content.find('Penalties')
-    # TODO: get yardage
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='Penalties').parent.next_siblings if x != '\n'])
+    team_stats.append([filter_html_list(x.contents)
+                       for x in content.find(text='Yds').parent.next_siblings if x != '\n'])
 
     return None
 
