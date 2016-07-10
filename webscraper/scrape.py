@@ -23,7 +23,8 @@ def extract_components_from_html(list):
         if tag:
             list[idx] = (tag.string, tag['href'])
         else:
-            list[idx] = value.string if value.contents else 0
+            list[idx] = value.find(text=lambda y: y != '\n',
+                                   recursive=False) if value.contents else 0
     return list
 
 
@@ -61,32 +62,26 @@ def get_game_team_stats(content):
 
     # Teams
     # TODO: get team names and links
+    # team_stats.append([('Team A', 'link a'), ('Team B', 'link b')])
 
     # Play/Yardage Statistics
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='Total Yards').parent.next_siblings if x != '\n'])
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='Total Plays').parent.next_siblings if x != '\n'])
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='Yds/Play').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='Total Yards').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='Total Plays').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='Yds/Play').parent.next_siblings if x != '\n'])
 
     # First Down Statistics
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='First Downs').parent.next_siblings if x != '\n'])
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='Pass').parent.next_siblings if x != '\n'])
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='Rush').parent.next_siblings if x != '\n'])
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='Penalty').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='First Downs').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='Pass').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='Rush').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='Penalty').parent.next_siblings if x != '\n'])
 
     # Penalty Statistics
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='Penalties').parent.next_siblings if x != '\n'])
-    team_stats.append([filter_html_list(x.contents)
-                       for x in content.find(text='Yds').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='Penalties').parent.next_siblings if x != '\n'])
+    team_stats.append([x for x in content.find(text='Yds').parent.next_siblings if x != '\n'])
 
-    return None
+    team_stats = [list(x) for x in zip(*team_stats)]
+
+    return [tuple(extract_components_from_html(x)) for x in team_stats]
 
 
 def get_passing_stats(content):
@@ -133,6 +128,10 @@ def execute_game_data_collection(link):
     """ Function used to collect game data for specified link """
 
     page_content = BeautifulSoup(requests.get(link).content, 'lxml')
+
+    for e in page_content.find_all('br'):
+        e.replace_with('')
+
     gsi = get_game_summary_info(page_content)
     gts = get_game_team_stats(page_content)
     ps = get_passing_stats(page_content)

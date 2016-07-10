@@ -6,7 +6,7 @@ from webscraper import *
 class WebScraperTest(unittest.TestCase):
     """ Tests for web scraping components """
 
-    def test_get_games_for_date(self):
+    def test_get_all_games_for_date(self):
         """ Test links returned against predefined games for Oct 8, 2015 """
 
         expected_games = ['/cfb/boxscores/2015-10-08-houston.html',
@@ -24,6 +24,10 @@ class WebScraperTest(unittest.TestCase):
     def test_get_game_team_stats(self):
         link = 'http://www.sports-reference.com/cfb/boxscores/2003-09-11-utah.html'
         content = BeautifulSoup(requests.get(link).content, 'lxml')
+
+        for e in content.find_all('br'):
+            e.replace_with('')
+
         expected_item = (('California', '/cfb/schools/california/2003.html'), 365, 66, 5.5, 19, 13,
                          5, 1, 2, 10)
         self.assertIn(expected_item, get_game_team_stats(content))
