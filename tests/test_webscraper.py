@@ -28,8 +28,8 @@ class WebScraperTest(unittest.TestCase):
         for e in content.find_all('br'):
             e.replace_with('')
 
-        expected_item = (('California', '/cfb/schools/california/2003.html'), 365, 66, 5.5, 19, 13,
-                         5, 1, 2, 10)
+        expected_item = (('California', '/cfb/schools/california/2003.html'), '365', '66', '5.5', '19', '13',
+                         '5', '1', '2', '10')
         self.assertIn(expected_item, get_game_team_stats(content))
 
     def test_get_passing_stats(self):

@@ -61,8 +61,7 @@ def get_game_team_stats(content):
     team_stats = list()
 
     # Teams
-    # TODO: get team names and links
-    # team_stats.append([('Team A', 'link a'), ('Team B', 'link b')])
+    team_stats.append([x.parent for x in content.find_all('a', href=re.compile('.*schools/.+'))])
 
     # Play/Yardage Statistics
     team_stats.append([x for x in content.find(text='Total Yards').parent.next_siblings if x != '\n'])
