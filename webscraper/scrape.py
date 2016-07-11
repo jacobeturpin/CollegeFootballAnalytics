@@ -15,17 +15,18 @@ def filter_html_list(items):
     return list(filter(lambda x: x != '\n', items))
 
 
-def extract_components_from_html(list):
+def extract_components_from_html(html_list):
     """ Updates list of html elements with desired statistical components """
 
-    for idx, value in enumerate(list):
-        tag = value.find('a')
-        if tag:
-            list[idx] = (tag.string, tag['href'])
+    for idx, value in enumerate(html_list):
+        if value.get('href'):
+            html_list[idx] = (value.string, value['href'])
+        elif value.find('a'):
+            html_list[idx] = (value.find('a').string, value.find('a')['href'])
         else:
-            list[idx] = value.find(text=lambda y: y != '\n',
-                                   recursive=False) if value.contents else 0
-    return list
+            html_list[idx] = value.find(text=lambda y: y != '\n',
+                                        recursive=False) if value.contents else 0
+    return html_list
 
 
 def get_table_container(content, text):
@@ -61,7 +62,7 @@ def get_game_team_stats(content):
     team_stats = list()
 
     # Teams
-    team_stats.append([x.parent for x in content.find_all('a', href=re.compile('.*schools/.+'))])
+    team_stats.append([x for x in content.find_all('a', href=re.compile('.*schools/.+'))[:2]])
 
     # Play/Yardage Statistics
     team_stats.append([x for x in content.find(text='Total Yards').parent.next_siblings if x != '\n'])

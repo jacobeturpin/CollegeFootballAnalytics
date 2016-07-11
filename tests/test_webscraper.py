@@ -28,9 +28,11 @@ class WebScraperTest(unittest.TestCase):
         for e in content.find_all('br'):
             e.replace_with('')
 
-        expected_item = (('California', '/cfb/schools/california/2003.html'), '365', '66', '5.5', '19', '13',
-                         '5', '1', '2', '10')
-        self.assertIn(expected_item, get_game_team_stats(content))
+        expected_item = [(('California', '/cfb/schools/california/2003.html'), '365', '66', '5.5', '19', '13',
+                         '5', '1', '2', '10'),
+                         (('Utah', '/cfb/schools/utah/2003.html'), '336', '76', '4.4', '21', '7', '14', '0',
+                         '7', '52')]
+        self.assertEquals(expected_item, get_game_team_stats(content))
 
     def test_get_passing_stats(self):
         link = 'http://www.sports-reference.com/cfb/boxscores/2016-01-11-clemson.html'
