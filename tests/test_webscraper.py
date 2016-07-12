@@ -6,6 +6,8 @@ from webscraper import *
 class WebScraperTest(unittest.TestCase):
     """ Tests for web scraping components """
 
+    url_root = 'http://sports-reference.com'
+
     def test_get_all_games_for_date(self):
         """ Test links returned against predefined games for Oct 8, 2015 """
 
@@ -14,12 +16,12 @@ class WebScraperTest(unittest.TestCase):
         self.assertEqual(expected_games, get_all_games_for_date(2015, 10, 8))
 
     def test_get_game_summary_info(self):
-        link = 'http://www.sports-reference.com/cfb/boxscores/2000-09-16-akron.html'
-        content = BeautifulSoup(requests.get(link).content, 'lxml')
+        link = '/cfb/boxscores/2000-09-16-akron.html'
+        content = BeautifulSoup(requests.get(self.url_root + link).content, 'lxml')
         expected_item = ('/cfb/boxscores/2000-09-16-akron.html',
-                         ('Central Florida', '/cfb/schools/central-florida/2000.html'), 24,
-                         ('Akron', '/cfb/schools/akron/2000.html'), 35)
-        self.assertIn(expected_item, get_game_summary_info(content))
+                         ('Central Florida', '/cfb/schools/central-florida/2000.html'), '24',
+                         ('Akron', '/cfb/schools/akron/2000.html'), '35')
+        self.assertEquals(expected_item, get_game_summary_info(content, link))
 
     def test_get_game_team_stats(self):
         link = 'http://www.sports-reference.com/cfb/boxscores/2003-09-11-utah.html'

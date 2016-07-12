@@ -1,1 +1,1 @@
-from .scrape import *
+from .game_scraper import *

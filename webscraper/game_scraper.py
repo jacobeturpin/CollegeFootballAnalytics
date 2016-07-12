@@ -7,7 +7,7 @@ import requests
 import re
 
 
-__url_root = 'http://sports-reference.com/cfb/'
+__url_root = 'http://sports-reference.com'
 
 
 def filter_html_list(items):
@@ -42,7 +42,7 @@ def get_all_games_for_date(year, month, day):
     if date.today() <= input_date:
         raise ValueError("Must provide past date")
 
-    url = str.format('{0}boxscores/index.cgi?month={1}&day={2}&year={3}',
+    url = str.format('{0}/cfb/boxscores/index.cgi?month={1}&day={2}&year={3}',
                      __url_root, month, day, year)
 
     soup = BeautifulSoup(requests.get(url).content, 'lxml')
@@ -51,9 +51,13 @@ def get_all_games_for_date(year, month, day):
             in soup.find_all('a', href=re.compile(regex_string), text='Final')]
 
 
-def get_game_summary_info(content):
+def get_game_summary_info(content, link):
     """ Retrieves game score and summary info for specified link """
-    return None
+
+    teams = [(x.string, x['href']) for x in content.find('h1').find_all('a')]
+    scores = re.findall(r"[0-9]\w+", content.find('h1').text)
+
+    return (link, teams[0], scores[0], teams[1], scores[1])
 
 
 def get_game_team_stats(content):
