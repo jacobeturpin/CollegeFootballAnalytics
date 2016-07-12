@@ -1,9 +1,9 @@
 import unittest
 
-from .test_webscraper import WebScraperTest
+from .test_webscraper import GameScraperTest
 
 
 def all_tests():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(WebScraperTest))
+    suite.addTest(unittest.makeSuite(GameScraperTest))
     return suite
