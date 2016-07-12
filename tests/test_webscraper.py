@@ -3,8 +3,8 @@ import unittest
 from webscraper import *
 
 
-class WebScraperTest(unittest.TestCase):
-    """ Tests for web scraping components """
+class GameScraperTest(unittest.TestCase):
+    """ Tests for web scraping game/boxscore components """
 
     url_root = 'http://sports-reference.com'
 
@@ -75,6 +75,12 @@ class WebScraperTest(unittest.TestCase):
                          ('Arizona State', '/cfb/schools/arizona-state/2013.html'),
                          0, 0, 0, 0, 0, 0, 0, '4', '132', '33.0')
         self.assertIn(expected_item, get_kick_punt_stats(content))
+
+
+class ConferenceScraperTest(unittest.TestCase):
+    """ Test for web scraping conference components """
+
+    url_root = 'http://sports-reference.com'
 
 
 if __name__ == '__main__':
