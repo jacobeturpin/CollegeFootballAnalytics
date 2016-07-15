@@ -4,6 +4,8 @@ import sqlalchemy as sa
 class DatabaseManager:
     """ Wrapper around sqlalchemy core to handle database interactions """
 
+    COMMASPACE = ', '
+
     def __init__(self, config):
         """ Instantiate an object of DatabaseManager """
 
@@ -18,4 +20,17 @@ class DatabaseManager:
         self.engine = sa.create_engine(conn_string)
 
     def add_rows_to_table(self, table_name, vals):
-        pass
+        """ Generic method to add rows to a specified table """
+
+        with self.engine.connect() as connection:
+            with connection.begin() as transaction:
+                try:
+                    rows = self.COMMASPACE.join('?' * len(vals[0]))
+                    ins = 'INSERT INTO {tablename} VALUES ({markers})'
+                    ins = ins.format(tablename=table_name, markers=rows)
+                    connection.execute(ins, vals)
+                except Exception as e:
+                    transaction.rollback()
+                    raise e
+                else:
+                    transaction.commit()
