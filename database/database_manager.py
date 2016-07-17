@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 
+from runserver import config
 
 class DatabaseManager:
     """ Wrapper around sqlalchemy core to handle database interactions """
@@ -34,3 +35,9 @@ class DatabaseManager:
                     raise e
                 else:
                     transaction.commit()
+
+    def select_all_from_table(self, table_name):
+        """ Retrieves all rows from a specified table """
+
+        with self.engine.connect() as connection:
+            return connection.execute('SELECT * FROM ?', table_name).fetchall()
