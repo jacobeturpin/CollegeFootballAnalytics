@@ -16,6 +16,12 @@ CREATE TABLE Conference (
 	ConferenceLink	VARCHAR(250)	NOT NULL
 );
 
+CREATE TABLE ConferenceAffiliation (
+  Season          INTEGER       NOT NULL,
+  TeamId          VARCHAR(36)   NOT NULL,
+  ConferenceId    VARCHAR(36)   NOT NULL
+);
+
 CREATE TABLE Game (
 	GameId					VARCHAR(36)		NOT NULL,
 	GameLink				VARCHAR(250)	NOT NULL,
