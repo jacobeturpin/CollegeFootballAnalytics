@@ -57,7 +57,7 @@ def get_game_summary_info(content, link):
     teams = [(x.string, x['href']) for x in content.find('h1').find_all('a')]
     scores = re.findall(r"[0-9]\w+", content.find('h1').text)
 
-    return (link, teams[0], scores[0], teams[1], scores[1])
+    return tuple([link, teams[0], scores[0], teams[1], scores[1]])
 
 
 def get_game_team_stats(content):
