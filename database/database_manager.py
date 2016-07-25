@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+from configparser import ConfigParser
 
 from runserver import config
 
@@ -7,14 +8,15 @@ class DatabaseManager:
 
     COMMASPACE = ', '
 
-    def __init__(self, config):
+    def __init__(self):
         """ Instantiate an object of DatabaseManager """
 
-        self.dialect = config.get('dialect')
-        self.server = config.get('server')
-        self.database = config.get('database')
-        self.user = config.get('user')
-        self.__pwd = config.get('password')
+        with ConfigParser() as parser:
+            self.dialect = parser.get('dialect')
+            self.server = parser.get('server')
+            self.database = parser.get('database')
+            self.user = parser.get('user')
+            self.__pwd = parser.get('password')
 
         conn_string = str.format('{}://{}:{}@{}/{}', self.dialect, self.user, self.__pwd,
                                  self.server, self.database)
