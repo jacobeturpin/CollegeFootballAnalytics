@@ -1,7 +1,8 @@
+""" Handle interactions with database to add/retrieve statistical data """
+
 import sqlalchemy as sa
 from configparser import ConfigParser
 
-from runserver import config
 
 class DatabaseManager:
     """ Wrapper around sqlalchemy core to handle database interactions """

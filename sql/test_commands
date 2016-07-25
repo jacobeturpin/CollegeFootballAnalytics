@@ -1,0 +1,11 @@
+DROP TABLE Team;
+DROP TABLE Player;
+DROP TABLE Conference;
+DROP TABLE ConferenceAffiliation;
+DROP TABLE Game;
+DROP TABLE TeamBoxScore;
+DROP TABLE PassingBoxScore;
+DROP TABLE RushReceiveBoxScore;
+DROP TABLE DefenseBoxScore;
+DROP TABLE KickPuntReturnBoxScore;
+DROP TABLE KickPuntBoxScore;
