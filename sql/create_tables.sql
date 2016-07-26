@@ -25,6 +25,7 @@ CREATE TABLE ConferenceAffiliation (
 CREATE TABLE Game (
 	GameId					VARCHAR(36)		NOT NULL,
 	GameLink				VARCHAR(250)	NOT NULL,
+  GameDate        DATE          NOT NULL,
 	HomeTeamId			VARCHAR(36)		NOT NULL,
 	HomeTeamScore		INTEGER				NOT NULL,
 	AwayTeamId			VARCHAR(36)		NOT NULL,

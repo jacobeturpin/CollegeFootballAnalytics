@@ -13,6 +13,7 @@ class DatabaseManager:
         """ Instantiate an object of DatabaseManager """
 
         with ConfigParser() as parser:
+            parser.read('config.ini')
             self.dialect = parser.get('dialect')
             self.server = parser.get('server')
             self.database = parser.get('database')
@@ -33,14 +34,19 @@ class DatabaseManager:
                     ins = 'INSERT INTO {tablename} VALUES ({markers})'
                     ins = ins.format(tablename=table_name, markers=rows)
                     connection.execute(ins, vals)
+                    transaction.commit()
                 except Exception as e:
                     transaction.rollback()
                     raise e
-                else:
-                    transaction.commit()
+        return True
 
     def select_all_from_table(self, table_name):
         """ Retrieves all rows from a specified table """
 
         with self.engine.connect() as connection:
             return connection.execute('SELECT * FROM ?', table_name).fetchall()
+
+    def execute_query(self, query):
+
+        with self.engine.connect() as connection:
+            return connection.execute(query).fetch_all()
