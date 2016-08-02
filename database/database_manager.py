@@ -38,7 +38,6 @@ class DatabaseManager:
                 except Exception as e:
                     transaction.rollback()
                     raise e
-        return True
 
     def select_all_from_table(self, table_name):
         """ Retrieves all rows from a specified table """
@@ -47,6 +46,7 @@ class DatabaseManager:
             return connection.execute('SELECT * FROM ?', table_name).fetchall()
 
     def execute_query(self, query):
+        """ Method to directly provide SQL query to manager object """
 
         with self.engine.connect() as connection:
             return connection.execute(query).fetch_all()
