@@ -1,19 +1,21 @@
 """ Used to keep track of state during scraping process """
 
 import re
+from collections import namedtuple
 from uuid import uuid4
-from datetime import date, timedelta
+from datetime import date
 
 import requests
 from bs4 import BeautifulSoup
-
-from webscraper import execute_game_data_collection
 
 
 class ScrapingManager:
     """ Manages the state and relationship with database for web scraping """
 
     __url_root = 'http://sports-reference.com'
+
+    # TODO:  Add namedtuple to server as data containers for each scraped component
+    PlayerContainer = namedtuple('PlayerContainer' ['Id', 'Name'])  # TODO: finish values
 
     def __init__(self, db):
         """ Instantiates an object of Scraping Manager """
@@ -26,30 +28,18 @@ class ScrapingManager:
 
         self.last_date = self.db.execute_query('SELECT MAX(GameDate) FROM Game')
 
-        self.staged_data = dict()
+        self.staged_data = list()
 
     @staticmethod
     def generate_id(): return uuid4()
 
-    def check_vals_for_id(self):
-        pass
+    def get_or_make_id(self, source, value):
 
-    @staticmethod
-    def get_all_games_for_date(year, month, day):
-        """ Retrieves links for all games occurring on a specified date """
-
-        input_date = date(month=month, day=day, year=year)
-
-        if date.today() <= input_date:
-            raise ValueError("Must provide past date")
-
-        url = str.format('{0}/cfb/boxscores/index.cgi?month={1}&day={2}&year={3}',
-                         ScrapingManager.__url_root, month, day, year)
-
-        soup = BeautifulSoup(requests.get(url).content, 'lxml')
-        regex_string = str.format('.*{}.*', input_date.strftime('%Y-%m-%d'))
-        return [link.get('href') for link
-                in soup.find_all('a', href=re.compile(regex_string), text='Final')]
+        existing = getattr(self, source)
+        if value not in existing:
+            return self.generate_id()
+        else:
+            pass    # TODO: need to return id from source
 
     def commit_staged_data(self):
         """ Take manager's staged data and insert into database """
@@ -61,10 +51,12 @@ class ScrapingManager:
 
     # TODO: need to update the following to make OOP-friendly
 
+    @staticmethod
     def filter_html_list(items):
         """ Takes list of html from scraping and removes unnecessary elements """
         return list(filter(lambda x: x != '\n', items))
 
+    @staticmethod
     def extract_components_from_html(html_list):
         """ Updates list of html elements with desired statistical components """
 
@@ -78,26 +70,28 @@ class ScrapingManager:
                                             recursive=False) if value.contents else 0
         return html_list
 
+    @staticmethod
     def get_table_container(content, text):
         """ Uses heading text from DOM to retrieve tabular html content """
         return content.find('h2', text=text).parent.findNextSibling()
 
-    def get_all_games_for_date(year, month, day):
+    @staticmethod
+    def get_all_games_for_date(in_date=date.now()):
         """ Retrieves links for all games occurring on a specified date """
 
-        input_date = date(month=month, day=day, year=year)
-
-        if date.today() <= input_date:
+        if date.today() <= in_date:
             raise ValueError("Must provide past date")
 
         url = str.format('{0}/cfb/boxscores/index.cgi?month={1}&day={2}&year={3}',
-                         __url_root, month, day, year)
+                         ScrapingManager.__url_root, in_date.month, in_date.day,
+                         in_date.year)
 
         soup = BeautifulSoup(requests.get(url).content, 'lxml')
-        regex_string = str.format('.*{}.*', input_date.strftime('%Y-%m-%d'))
+        regex_string = str.format('.*{}.*', in_date.strftime('%Y-%m-%d'))
         return [link.get('href') for link
                 in soup.find_all('a', href=re.compile(regex_string), text='Final')]
 
+    @staticmethod
     def get_game_summary_info(content, link):
         """ Retrieves game score and summary info for specified link """
 
@@ -106,6 +100,7 @@ class ScrapingManager:
 
         return tuple([link, teams[0], scores[0], teams[1], scores[1]])
 
+    @staticmethod
     def get_game_team_stats(content):
         """ Retrieves team-level box score data for specified game """
 
@@ -131,44 +126,59 @@ class ScrapingManager:
 
         team_stats = [list(x) for x in zip(*team_stats)]
 
-        return [tuple(extract_components_from_html(x)) for x in team_stats]
+        return [tuple(ScrapingManager.extract_components_from_html(x)) for x in team_stats]
 
+    @staticmethod
     def get_passing_stats(content):
         """ Retrieves player-level passing data for specified game """
 
-        header = get_table_container(content, 'Passing')
-        html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-        return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
+        header = ScrapingManager.get_table_container(content, 'Passing')
+        html = [x.parent.parent.contents
+                for x in header.find_all('a', href=re.compile('.*player.*'))]
+        return [tuple(ScrapingManager.extract_components_from_html(x))
+                for x in map(ScrapingManager.filter_html_list, html)]
 
+    @staticmethod
     def get_rush_receive_stats(content):
         """ Retrieves player-level rush and receiving data for specified game """
 
-        header = get_table_container(content, 'Rushing & Receiving')
-        html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-        return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
+        header = ScrapingManager.get_table_container(content, 'Rushing & Receiving')
+        html = [x.parent.parent.contents
+                for x in header.find_all('a', href=re.compile('.*player.*'))]
+        return [tuple(ScrapingManager.extract_components_from_html(x))
+                for x in map(ScrapingManager.filter_html_list, html)]
 
+    @staticmethod
     def get_defense_stats(content):
         """ Retrieves player-level defensive data for specified game """
 
-        header = get_table_container(content, 'Defense & Fumbles')
-        html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-        return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
+        header = ScrapingManager.get_table_container(content, 'Defense & Fumbles')
+        html = [x.parent.parent.contents
+                for x in header.find_all('a', href=re.compile('.*player.*'))]
+        return [tuple(ScrapingManager.extract_components_from_html(x))
+                for x in map(ScrapingManager.filter_html_list, html)]
 
+    @staticmethod
     def get_return_stats(content):
         """ Retrieves player-level punt/kick return data for specified game """
 
-        header = get_table_container(content, 'Kick & Punt Returns')
-        html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-        return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
+        header = ScrapingManager.get_table_container(content, 'Kick & Punt Returns')
+        html = [x.parent.parent.contents
+                for x in header.find_all('a', href=re.compile('.*player.*'))]
+        return [tuple(ScrapingManager.extract_components_from_html(x))
+                for x in map(ScrapingManager.filter_html_list, html)]
 
+    @staticmethod
     def get_kick_punt_stats(content):
         """ Retrieve player-level kicking data for specified game """
 
-        header = get_table_container(content, 'Kicking & Punting')
-        html = [x.parent.parent.contents for x in header.find_all('a', href=re.compile('.*player.*'))]
-        return [tuple(extract_components_from_html(x)) for x in map(filter_html_list, html)]
+        header = ScrapingManager.get_table_container(content, 'Kicking & Punting')
+        html = [x.parent.parent.contents
+                for x in header.find_all('a', href=re.compile('.*player.*'))]
+        return [tuple(ScrapingManager.extract_components_from_html(x))
+                for x in map(ScrapingManager.filter_html_list, html)]
 
-    def execute_game_data_collection(link):
+    def execute_game_data_collection(self, link):
         """ Function used to collect game data for specified link """
 
         page_content = BeautifulSoup(requests.get(link).content, 'lxml')
@@ -176,12 +186,12 @@ class ScrapingManager:
         for e in page_content.find_all('br'):
             e.replace_with('')
 
-        gsi = get_game_summary_info(page_content)
-        gts = get_game_team_stats(page_content)
-        ps = get_passing_stats(page_content)
-        rrs = get_rush_receive_stats(page_content)
-        ds = get_defense_stats(page_content)
-        rs = get_return_stats(page_content)
-        kps = get_kick_punt_stats(page_content)
-        return gsi, gts, ps, rrs, ds, rs, kps
+        gsi = ScrapingManager.get_game_summary_info(page_content)
+        gts = ScrapingManager.get_game_team_stats(page_content)
+        ps = ScrapingManager.get_passing_stats(page_content)
+        rrs = ScrapingManager.get_rush_receive_stats(page_content)
+        ds = ScrapingManager.get_defense_stats(page_content)
+        rs = ScrapingManager.get_return_stats(page_content)
+        kps = ScrapingManager.get_kick_punt_stats(page_content)
 
+        self.staged_data.extend(gsi + gts + ps + rrs + ds + rs + kps)
