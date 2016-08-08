@@ -22,6 +22,7 @@ class ScrapingManager:
 
         self.db = db
 
+        # TODO: make sure these are represented as dictionaries
         self.teams = self.db.select_all_from_table('Team')
         self.players = self.db.select_all_from_table('Player')
         self.conferences = self.db.select_all_from_table('Conference')
@@ -34,12 +35,14 @@ class ScrapingManager:
     def generate_id(): return uuid4()
 
     def get_or_make_id(self, source, value):
+        """ Checks for existing id value in mapped stores (ex. self.teams) and either
+            returns existing value or returns a newly generated one """
 
         existing = getattr(self, source)
-        if value not in existing:
+        if value not in existing.get(value):
             return self.generate_id()
         else:
-            pass    # TODO: need to return id from source
+            return existing[value]
 
     def commit_staged_data(self):
         """ Take manager's staged data and insert into database """
@@ -48,8 +51,6 @@ class ScrapingManager:
             self.db.add_rows_to_table(key, val)
 
         self.staged_data = None
-
-    # TODO: need to update the following to make OOP-friendly
 
     @staticmethod
     def filter_html_list(items):
@@ -98,6 +99,8 @@ class ScrapingManager:
         teams = [(x.string, x['href']) for x in content.find('h1').find_all('a')]
         scores = re.findall(r"[0-9]\w+", content.find('h1').text)
 
+        # TODO: convert team names into id values
+
         return tuple([link, teams[0], scores[0], teams[1], scores[1]])
 
     @staticmethod
@@ -108,6 +111,7 @@ class ScrapingManager:
 
         # Teams
         team_stats.append([x for x in content.find_all('a', href=re.compile('.*schools/.+'))[:2]])
+        # TODO: convert team names into id values
 
         # Play/Yardage Statistics
         team_stats.append([x for x in content.find(text='Total Yards').parent.next_siblings if x != '\n'])
@@ -135,6 +139,9 @@ class ScrapingManager:
         header = ScrapingManager.get_table_container(content, 'Passing')
         html = [x.parent.parent.contents
                 for x in header.find_all('a', href=re.compile('.*player.*'))]
+
+        # TODO: convert player names into id values
+
         return [tuple(ScrapingManager.extract_components_from_html(x))
                 for x in map(ScrapingManager.filter_html_list, html)]
 
@@ -145,6 +152,9 @@ class ScrapingManager:
         header = ScrapingManager.get_table_container(content, 'Rushing & Receiving')
         html = [x.parent.parent.contents
                 for x in header.find_all('a', href=re.compile('.*player.*'))]
+
+        # TODO: convert player names into id values
+
         return [tuple(ScrapingManager.extract_components_from_html(x))
                 for x in map(ScrapingManager.filter_html_list, html)]
 
@@ -155,6 +165,9 @@ class ScrapingManager:
         header = ScrapingManager.get_table_container(content, 'Defense & Fumbles')
         html = [x.parent.parent.contents
                 for x in header.find_all('a', href=re.compile('.*player.*'))]
+
+        # TODO: convert player names into id values
+
         return [tuple(ScrapingManager.extract_components_from_html(x))
                 for x in map(ScrapingManager.filter_html_list, html)]
 
@@ -175,6 +188,9 @@ class ScrapingManager:
         header = ScrapingManager.get_table_container(content, 'Kicking & Punting')
         html = [x.parent.parent.contents
                 for x in header.find_all('a', href=re.compile('.*player.*'))]
+
+        # TODO: convert player names into id values
+
         return [tuple(ScrapingManager.extract_components_from_html(x))
                 for x in map(ScrapingManager.filter_html_list, html)]
 
@@ -194,4 +210,14 @@ class ScrapingManager:
         rs = ScrapingManager.get_return_stats(page_content)
         kps = ScrapingManager.get_kick_punt_stats(page_content)
 
+        # TODO: need to handle new teams and players
+
         self.staged_data.extend(gsi + gts + ps + rrs + ds + rs + kps)
+
+    @staticmethod
+    def get_conference_details():
+        pass
+
+    @staticmethod
+    def get_conference_affiliation():
+        pass
