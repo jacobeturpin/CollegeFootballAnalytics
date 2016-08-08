@@ -15,10 +15,11 @@ while True:
 
     today = date.now()
 
-    # TODO: get games on current date
+    games = scraper.get_all_games_for_date(today.year, today.month, today.day)
 
-    # TODO: scrape games occurring on current date
+    for game in games:
+        scraper.execute_game_data_collection(game)
 
-    # TODO: add data to database
+    scraper.commit_staged_data()
 
     sleep(3600 * 4)  # Wait four hours
