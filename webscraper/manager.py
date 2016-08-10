@@ -23,7 +23,10 @@ class ScrapingManager:
         self.db = db
 
         # TODO: make sure these are represented as dictionaries
+        # Represented as key -> (name, link) | value -> {'id': uuid4, 'years': []}
         self.teams = self.db.select_all_from_table('Team')
+
+        # Represented as key -> (name, link) | value -> uuid4
         self.players = self.db.select_all_from_table('Player')
         self.conferences = self.db.select_all_from_table('Conference')
 
@@ -219,5 +222,12 @@ class ScrapingManager:
         pass
 
     @staticmethod
-    def get_conference_affiliation():
-        pass
+    def get_conference_affiliation(team, year):
+        """ Generates a conference affiliation record for given team and year """
+
+        soup = BeautifulSoup(requests.get(str.format('{0}/{1}.html', team[1], year)).content, 'lxml')
+        item = soup.find('a', href=re.compile('.*conferences/.+'))
+
+        # TODO: return as namedtuple
+
+        return item
