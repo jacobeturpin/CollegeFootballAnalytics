@@ -15,7 +15,7 @@ class ScrapingManager:
     __url_root = 'http://sports-reference.com'
 
     # TODO:  Add namedtuple to server as data containers for each scraped component
-    PlayerContainer = namedtuple('PlayerContainer' ['Id', 'Name'])  # TODO: finish values
+    # PlayerContainer = namedtuple('PlayerContainer' ['Id', 'Name'])  # TODO: finish values
 
     def __init__(self, db):
         """ Instantiates an object of Scraping Manager """
@@ -80,7 +80,7 @@ class ScrapingManager:
         return content.find('h2', text=text).parent.findNextSibling()
 
     @staticmethod
-    def get_all_games_for_date(in_date=date.now()):
+    def get_all_games_for_date(in_date=date.today()):
         """ Retrieves links for all games occurring on a specified date """
 
         if date.today() <= in_date:
