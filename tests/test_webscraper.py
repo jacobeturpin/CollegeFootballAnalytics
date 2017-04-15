@@ -1,5 +1,7 @@
 import unittest
 
+from datetime import date
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -19,7 +21,7 @@ class GameScraperTest(unittest.TestCase):
 
         expected_games = ['/cfb/boxscores/2015-10-08-houston.html',
                           '/cfb/boxscores/2015-10-08-southern-california.html']
-        self.assertEqual(expected_games, self.sm.get_all_games_for_date(2015, 10, 8))
+        self.assertEqual(expected_games, self.sm.get_all_games_for_date(date(2015, 10, 8)))
 
     def test_get_game_summary_info(self):
         link = '/cfb/boxscores/2000-09-16-akron.html'

@@ -24,13 +24,13 @@ class ScrapingManager:
 
         # TODO: make sure these are represented as dictionaries
         # Represented as key -> (name, link) | value -> {'id': uuid4, 'years': []}
-        self.teams = self.db.select_all_from_table('Team')
+        # self.teams = self.db.select_all_from_table('Team')
 
         # Represented as key -> (name, link) | value -> uuid4
-        self.players = self.db.select_all_from_table('Player')
-        self.conferences = self.db.select_all_from_table('Conference')
+        # self.players = self.db.select_all_from_table('Player')
+        # self.conferences = self.db.select_all_from_table('Conference')
 
-        self.last_date = self.db.execute_query('SELECT MAX(GameDate) FROM Game')
+        # self.last_date = self.db.execute_query('SELECT MAX(GameDate) FROM Game')
 
         self.staged_data = list()
 
